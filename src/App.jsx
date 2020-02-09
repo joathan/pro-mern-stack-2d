@@ -36,8 +36,32 @@ class IssueRow extends React.Component {
 class IssueTable extends React.Component {
   constructor() {
     super();
-    this.state = { issues: initialIssues };
+    this.state = { issues: [] };
   }
+
+
+  /* 
+  componentDidMount(): This method is called as soon as the component’s
+  representation has been converted and inserted into the DOM.A setState() can be
+  called within this method. 
+  */
+  
+  /* 
+  # PT-BR
+  componentDidMount (): esse método é chamado assim que o componente
+  representação foi convertida e inserida no DOM. Um setState() pode ser
+  chamado dentro deste método. 
+  */
+  componentDidMount() {
+    this.loadData();
+  }
+  
+  loadData() {
+    setTimeout(() => {
+      this.setState({ issues: initialIssues });
+    }, 500);
+  }
+
   render() {
     const issueRows = this.state.issues.map(issue =>
       <IssueRow key={issue.id} issue={issue} />

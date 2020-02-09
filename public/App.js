@@ -91,12 +91,41 @@ function (_React$Component3) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(IssueTable).call(this));
     _this.state = {
-      issues: initialIssues
+      issues: []
     };
     return _this;
   }
+  /* 
+  componentDidMount(): This method is called as soon as the component’s
+  representation has been converted and inserted into the DOM.A setState() can be
+  called within this method. 
+  */
+
+  /* 
+  # PT-BR
+  componentDidMount (): esse método é chamado assim que o componente
+  representação foi convertida e inserida no DOM. Um setState() pode ser
+  chamado dentro deste método. 
+  */
+
 
   _createClass(IssueTable, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      this.loadData();
+    }
+  }, {
+    key: "loadData",
+    value: function loadData() {
+      var _this2 = this;
+
+      setTimeout(function () {
+        _this2.setState({
+          issues: initialIssues
+        });
+      }, 500);
+    }
+  }, {
     key: "render",
     value: function render() {
       var issueRows = this.state.issues.map(function (issue) {
