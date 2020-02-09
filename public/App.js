@@ -90,77 +90,22 @@ function (_React$Component3) {
   _inherits(IssueTable, _React$Component3);
 
   function IssueTable() {
-    var _this;
-
     _classCallCheck(this, IssueTable);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(IssueTable).call(this));
-    _this.state = {
-      issues: []
-    };
-    setTimeout(function () {
-      _this.createIssue(sampleIssue);
-    }, 2000);
-    return _this;
+    return _possibleConstructorReturn(this, _getPrototypeOf(IssueTable).apply(this, arguments));
   }
 
   _createClass(IssueTable, [{
-    key: "createIssue",
-    value: function createIssue(issue) {
-      issue.id = this.state.issues.length + 1;
-      issue.created = new Date();
-      var newIssueList = this.state.issues.slice();
-      newIssueList.push(issue);
-      this.setState({
-        issues: newIssueList
-      });
-    }
-    /* 
-    componentDidMount(): This method is called as soon as the component’s
-    representation has been converted and inserted into the DOM.A setState() can be
-    called within this method. 
-    */
-
-    /* 
-    # PT-BR
-    componentDidMount (): esse método é chamado assim que o componente
-    representação foi convertida e inserida no DOM. Um setState() pode ser
-    chamado dentro deste método. 
-    */
-
-  }, {
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      this.loadData();
-    }
-  }, {
-    key: "loadData",
-    value: function loadData() {
-      var _this2 = this;
-
-      setTimeout(function () {
-        _this2.setState({
-          issues: initialIssues
-        });
-      }, 500);
-    }
-  }, {
     key: "render",
     value: function render() {
-      var issueRows = this.state.issues.map(function (issue) {
+      var issueRows = this.props.issues.map(function (issue) {
         return React.createElement(IssueRow, {
           key: issue.id,
           issue: issue
         });
       });
-      var rowStyle = {
-        border: "1px solid silver",
-        padding: 4
-      };
       return React.createElement("table", {
-        style: {
-          borderCollapse: "collapse"
-        }
+        className: "bordered-table"
       }, React.createElement("thead", null, React.createElement("tr", null, React.createElement("th", null, "ID"), React.createElement("th", null, "Status"), React.createElement("th", null, "Owner"), React.createElement("th", null, "Created"), React.createElement("th", null, "Effort"), React.createElement("th", null, "Due Date"), React.createElement("th", null, "Title"))), React.createElement("tbody", null, issueRows));
     }
   }]);
@@ -174,9 +119,15 @@ function (_React$Component4) {
   _inherits(IssueAdd, _React$Component4);
 
   function IssueAdd() {
+    var _this;
+
     _classCallCheck(this, IssueAdd);
 
-    return _possibleConstructorReturn(this, _getPrototypeOf(IssueAdd).apply(this, arguments));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(IssueAdd).call(this));
+    setTimeout(function () {
+      _this.props.createIssue(sampleIssue);
+    }, 2000);
+    return _this;
   }
 
   _createClass(IssueAdd, [{
@@ -195,15 +146,66 @@ function (_React$Component5) {
   _inherits(IssueList, _React$Component5);
 
   function IssueList() {
+    var _this2;
+
     _classCallCheck(this, IssueList);
 
-    return _possibleConstructorReturn(this, _getPrototypeOf(IssueList).apply(this, arguments));
+    _this2 = _possibleConstructorReturn(this, _getPrototypeOf(IssueList).call(this));
+    _this2.state = {
+      issues: []
+    };
+    _this2.createIssue = _this2.createIssue.bind(_assertThisInitialized(_this2));
+    return _this2;
   }
+  /*
+  componentDidMount(): This method is called as soon as the component’s
+  representation has been converted and inserted into the DOM.A setState() can be
+  called within this method.
+  */
+
+  /*
+  # PT-BR
+  componentDidMount (): esse método é chamado assim que o componente
+  representação foi convertida e inserida no DOM. Um setState() pode ser
+  chamado dentro deste método.
+  */
+
 
   _createClass(IssueList, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      this.loadData();
+    }
+  }, {
+    key: "loadData",
+    value: function loadData() {
+      var _this3 = this;
+
+      setTimeout(function () {
+        _this3.setState({
+          issues: initialIssues
+        });
+      }, 500);
+    }
+  }, {
+    key: "createIssue",
+    value: function createIssue(issue) {
+      issue.id = this.state.issues.length + 1;
+      issue.created = new Date();
+      var newIssueList = this.state.issues.slice();
+      newIssueList.push(issue);
+      this.setState({
+        issues: newIssueList
+      });
+    }
+  }, {
     key: "render",
     value: function render() {
-      return React.createElement(React.Fragment, null, React.createElement("h1", null, "Issue Tracker"), React.createElement(IssueFilter, null), React.createElement("hr", null), React.createElement(IssueTable, null), React.createElement("hr", null), React.createElement(IssueAdd, null));
+      return React.createElement(React.Fragment, null, React.createElement("h1", null, "Issue Tracker"), React.createElement(IssueFilter, null), React.createElement("hr", null), React.createElement(IssueTable, {
+        issues: this.state.issues
+      }), React.createElement("hr", null), React.createElement(IssueAdd, {
+        createIssue: this.createIssue
+      }));
     }
   }]);
 
