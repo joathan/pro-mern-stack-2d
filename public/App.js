@@ -35,6 +35,11 @@ var initialIssues = [{
   due: new Date('2018-08-30'),
   title: 'Missing bottom border on panel'
 }];
+var sampleIssue = {
+  status: 'New',
+  owner: 'Pieta',
+  title: 'Completion date should be optional'
+};
 
 var IssueFilter =
 /*#__PURE__*/
@@ -93,23 +98,37 @@ function (_React$Component3) {
     _this.state = {
       issues: []
     };
+    setTimeout(function () {
+      _this.createIssue(sampleIssue);
+    }, 2000);
     return _this;
   }
-  /* 
-  componentDidMount(): This method is called as soon as the component’s
-  representation has been converted and inserted into the DOM.A setState() can be
-  called within this method. 
-  */
-
-  /* 
-  # PT-BR
-  componentDidMount (): esse método é chamado assim que o componente
-  representação foi convertida e inserida no DOM. Um setState() pode ser
-  chamado dentro deste método. 
-  */
-
 
   _createClass(IssueTable, [{
+    key: "createIssue",
+    value: function createIssue(issue) {
+      issue.id = this.state.issues.length + 1;
+      issue.created = new Date();
+      var newIssueList = this.state.issues.slice();
+      newIssueList.push(issue);
+      this.setState({
+        issues: newIssueList
+      });
+    }
+    /* 
+    componentDidMount(): This method is called as soon as the component’s
+    representation has been converted and inserted into the DOM.A setState() can be
+    called within this method. 
+    */
+
+    /* 
+    # PT-BR
+    componentDidMount (): esse método é chamado assim que o componente
+    representação foi convertida e inserida no DOM. Um setState() pode ser
+    chamado dentro deste método. 
+    */
+
+  }, {
     key: "componentDidMount",
     value: function componentDidMount() {
       this.loadData();
