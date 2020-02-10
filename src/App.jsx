@@ -1,19 +1,8 @@
-const initialIssues = [
-  {
-    id: 1, status: 'New', owner: 'Ravan', effort: 5,
-    created: new Date('2018-08-15'), due: undefined,
-    title: 'Error in console when clicking Add',
-  },
-  {
-    id: 2, status: 'Assigned', owner: 'Eddie', effort: 14,
-    created: new Date('2018-08-16'), due: new Date('2018-08-30'),
-    title: 'Missing bottom border on panel',
-  },
-];
-
 class IssueFilter extends React.Component {
   render() {
-    return <div>This is a placeholder for the issue filter.</div>;
+    return (
+      <div>This is a placeholder for the issue filter.</div>
+    );
   }
 }
 
@@ -24,9 +13,9 @@ function IssueRow(props) {
       <td>{issue.id}</td>
       <td>{issue.status}</td>
       <td>{issue.owner}</td>
-      <td>{issue.created.toDateString()}</td>
+      <td>{issue.created}</td>
       <td>{issue.effort}</td>
-      <td>{issue.due ? issue.due.toDateString() : ''}</td>
+      <td>{issue.due}</td>
       <td>{issue.title}</td>
     </tr>
   );
@@ -36,6 +25,7 @@ function IssueTable(props) {
   const issueRows = props.issues.map(issue =>
     <IssueRow key={issue.id} issue={issue} />
   );
+
   return (
     <table className="bordered-table">
       <thead>
@@ -89,26 +79,28 @@ class IssueList extends React.Component {
     this.state = { issues: [] };
     this.createIssue = this.createIssue.bind(this);
   }
-  /*
-  componentDidMount(): This method is called as soon as the component’s
-  representation has been converted and inserted into the DOM.A setState() can be
-  called within this method.
-  */
 
-  /*
-  # PT-BR
-  componentDidMount (): esse método é chamado assim que o componente
-  representação foi convertida e inserida no DOM. Um setState() pode ser
-  chamado dentro deste método.
-  */
   componentDidMount() {
     this.loadData();
   }
-  loadData() {
-    setTimeout(() => {
-      this.setState({ issues: initialIssues });
-    }, 500);
+
+  async loadData() {
+    const query = `query {
+      issueList {
+        id title status owner
+        created effort due
+      }
+    }`;
+
+    const response = await fetch('/graphql', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query })
+    });
+    const result = await response.json();
+    this.setState({ issues: result.data.issueList });
   }
+
   createIssue(issue) {
     issue.id = this.state.issues.length + 1;
     issue.created = new Date();
@@ -116,6 +108,7 @@ class IssueList extends React.Component {
     newIssueList.push(issue);
     this.setState({ issues: newIssueList });
   }
+
   render() {
     return (
       <React.Fragment>
@@ -130,13 +123,6 @@ class IssueList extends React.Component {
   }
 }
 
-class BorderWrap extends React.Component {
-  render() {
-    const borderedStyle = { border: "1px solid silver", padding: 6 };
-    return <div style={borderedStyle}>{this.props.children}</div>;
-  }
-}
-
 const element = <IssueList />;
 
-ReactDOM.render(element, document.getElementById("contents"));
+ReactDOM.render(element, document.getElementById('contents'));

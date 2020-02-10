@@ -1,5 +1,9 @@
 "use strict";
 
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -17,24 +21,6 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-var initialIssues = [{
-  id: 1,
-  status: 'New',
-  owner: 'Ravan',
-  effort: 5,
-  created: new Date('2018-08-15'),
-  due: undefined,
-  title: 'Error in console when clicking Add'
-}, {
-  id: 2,
-  status: 'Assigned',
-  owner: 'Eddie',
-  effort: 14,
-  created: new Date('2018-08-16'),
-  due: new Date('2018-08-30'),
-  title: 'Missing bottom border on panel'
-}];
 
 var IssueFilter =
 /*#__PURE__*/
@@ -59,7 +45,7 @@ function (_React$Component) {
 
 function IssueRow(props) {
   var issue = props.issue;
-  return React.createElement("tr", null, React.createElement("td", null, issue.id), React.createElement("td", null, issue.status), React.createElement("td", null, issue.owner), React.createElement("td", null, issue.created.toDateString()), React.createElement("td", null, issue.effort), React.createElement("td", null, issue.due ? issue.due.toDateString() : ''), React.createElement("td", null, issue.title));
+  return React.createElement("tr", null, React.createElement("td", null, issue.id), React.createElement("td", null, issue.status), React.createElement("td", null, issue.owner), React.createElement("td", null, issue.created), React.createElement("td", null, issue.effort), React.createElement("td", null, issue.due), React.createElement("td", null, issue.title));
 }
 
 function IssueTable(props) {
@@ -141,19 +127,6 @@ function (_React$Component3) {
     _this2.createIssue = _this2.createIssue.bind(_assertThisInitialized(_this2));
     return _this2;
   }
-  /*
-  componentDidMount(): This method is called as soon as the component’s
-  representation has been converted and inserted into the DOM.A setState() can be
-  called within this method.
-  */
-
-  /*
-  # PT-BR
-  componentDidMount (): esse método é chamado assim que o componente
-  representação foi convertida e inserida no DOM. Um setState() pode ser
-  chamado dentro deste método.
-  */
-
 
   _createClass(IssueList, [{
     key: "componentDidMount",
@@ -162,15 +135,52 @@ function (_React$Component3) {
     }
   }, {
     key: "loadData",
-    value: function loadData() {
-      var _this3 = this;
+    value: function () {
+      var _loadData = _asyncToGenerator(
+      /*#__PURE__*/
+      regeneratorRuntime.mark(function _callee() {
+        var query, response, result;
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                query = "query {\n      issueList {\n        id title status owner\n        created effort due\n      }\n    }";
+                _context.next = 3;
+                return fetch('/graphql', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                    query: query
+                  })
+                });
 
-      setTimeout(function () {
-        _this3.setState({
-          issues: initialIssues
-        });
-      }, 500);
-    }
+              case 3:
+                response = _context.sent;
+                _context.next = 6;
+                return response.json();
+
+              case 6:
+                result = _context.sent;
+                this.setState({
+                  issues: result.data.issueList
+                });
+
+              case 8:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, this);
+      }));
+
+      function loadData() {
+        return _loadData.apply(this, arguments);
+      }
+
+      return loadData;
+    }()
   }, {
     key: "createIssue",
     value: function createIssue(issue) {
@@ -196,32 +206,5 @@ function (_React$Component3) {
   return IssueList;
 }(React.Component);
 
-var BorderWrap =
-/*#__PURE__*/
-function (_React$Component4) {
-  _inherits(BorderWrap, _React$Component4);
-
-  function BorderWrap() {
-    _classCallCheck(this, BorderWrap);
-
-    return _possibleConstructorReturn(this, _getPrototypeOf(BorderWrap).apply(this, arguments));
-  }
-
-  _createClass(BorderWrap, [{
-    key: "render",
-    value: function render() {
-      var borderedStyle = {
-        border: "1px solid silver",
-        padding: 6
-      };
-      return React.createElement("div", {
-        style: borderedStyle
-      }, this.props.children);
-    }
-  }]);
-
-  return BorderWrap;
-}(React.Component);
-
 var element = React.createElement(IssueList, null);
-ReactDOM.render(element, document.getElementById("contents"));
+ReactDOM.render(element, document.getElementById('contents'));
